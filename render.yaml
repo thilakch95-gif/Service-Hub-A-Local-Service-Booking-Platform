@@ -21,13 +21,13 @@ services:
           name: service-hub-db
           property: connectionString
       - key: JWT_SECRET
-        value: secure_key
+        generateValue: true
       - key: JWT_EXPIRATION_MS
         value: 86400000
       - key: FRONTEND_URL
-        value: https://service-hub-frontend.onrender.com
+        value: https://service-hub-frontned.onrender.com
       - key: BACKEND_URL
-        value: https://service-hub-backend.onrender.com
+        value: https://service-hub-backend-57di.onrender.com
       - key: UPLOAD_DIR
         value: /var/data/uploads
       - key: APP_ADMIN_NAME
@@ -36,6 +36,18 @@ services:
         value: admin@servicehub.com
       - key: APP_ADMIN_PASSWORD
         value: admin123
+      - key: DEMO_USER_EMAIL
+        value: user@demo.com
+      - key: DEMO_USER_PASSWORD
+        value: User@123
+      - key: DEMO_PROVIDER_EMAIL
+        value: provider@demo.com
+      - key: DEMO_PROVIDER_PASSWORD
+        value: Provider@123
+      - key: DEMO_ADMIN_EMAIL
+        value: admin@demo.com
+      - key: DEMO_ADMIN_PASSWORD
+        value: Admin@123
     disk:
       name: uploads
       mountPath: /var/data
@@ -50,9 +62,9 @@ services:
     staticPublishPath: dist
     envVars:
       - key: VITE_API_BASE_URL
-        value: https://service-hub-backend.onrender.com/api
+        value: https://service-hub-backend-57di.onrender.com/api
       - key: VITE_WS_BASE_URL
-        value: https://service-hub-backend.onrender.com
+        value: https://service-hub-backend-57di.onrender.com
     routes:
       - type: rewrite
         source: /*
