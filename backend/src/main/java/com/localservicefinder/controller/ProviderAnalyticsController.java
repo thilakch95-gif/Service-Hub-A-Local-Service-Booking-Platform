@@ -2,6 +2,7 @@ package com.localservicefinder.controller;
 
 import com.localservicefinder.service.ProviderAnalyticsService;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/provider/analytics")
+@PreAuthorize("hasRole('PROVIDER')")
 public class ProviderAnalyticsController {
 
     private final ProviderAnalyticsService analyticsService;

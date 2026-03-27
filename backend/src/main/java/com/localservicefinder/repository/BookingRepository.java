@@ -83,7 +83,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
 
     @Query("""
-        SELECT SUM(b.providerEarning)
+        SELECT COALESCE(SUM(b.providerEarning), 0)
         FROM Booking b
         WHERE b.service.provider.id = :providerId
         AND b.status = 'COMPLETED'
@@ -108,7 +108,7 @@ List<Object[]> getCategoryPerformance(Long providerId);
 ===================================================== */
 
 @Query("""
-SELECT FUNCTION('MONTH', b.serviceDate), SUM(b.providerEarning)
+SELECT FUNCTION('MONTH', b.serviceDate), COALESCE(SUM(b.providerEarning), 0)
 FROM Booking b
 WHERE b.service.provider.id = :providerId
 AND b.status = 'COMPLETED'

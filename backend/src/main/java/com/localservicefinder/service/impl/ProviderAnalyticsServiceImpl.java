@@ -1,5 +1,8 @@
 package com.localservicefinder.service.impl;
 
+import com.localservicefinder.exception.NotFoundException;
+import com.localservicefinder.exception.UnauthorizedException;
+import com.localservicefinder.model.Role;
 import com.localservicefinder.model.User;
 import com.localservicefinder.repository.BookingRepository;
 import com.localservicefinder.repository.UserRepository;
@@ -23,12 +26,15 @@ public class ProviderAnalyticsServiceImpl implements ProviderAnalyticsService {
         this.userRepository = userRepository;
     }
 
-    private Long getProviderId(String email) {
-
+    private User getProvider(String email) {
         User provider = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Provider not found"));
+                .orElseThrow(() -> new NotFoundException("Provider not found"));
 
-        return provider.getId();
+        if (provider.getRole() != Role.PROVIDER) {
+            throw new UnauthorizedException("Only providers can access provider analytics");
+        }
+
+        return provider;
     }
 
     /* CATEGORY PERFORMANCE */
@@ -36,7 +42,7 @@ public class ProviderAnalyticsServiceImpl implements ProviderAnalyticsService {
     @Override
     public List<Map<String,Object>> getCategoryPerformance(String providerEmail) {
 
-        Long providerId = getProviderId(providerEmail);
+        Long providerId = getProvider(providerEmail).getId();
 
         List<Object[]> results =
                 bookingRepository.getCategoryPerformance(providerId);
@@ -62,7 +68,7 @@ public class ProviderAnalyticsServiceImpl implements ProviderAnalyticsService {
     @Override
     public List<Map<String,Object>> getMonthlyEarnings(String providerEmail) {
 
-        Long providerId = getProviderId(providerEmail);
+        Long providerId = getProvider(providerEmail).getId();
 
         List<Object[]> results =
                 bookingRepository.getMonthlyEarnings(providerId);
@@ -74,7 +80,7 @@ public class ProviderAnalyticsServiceImpl implements ProviderAnalyticsService {
             Map<String,Object> map = new HashMap<>();
 
             map.put("month", row[0]);
-            map.put("earnings", row[1]);
+            map.put("earnings", row[1] == null ? 0 : row[1]);
 
             response.add(map);
         }
@@ -88,7 +94,7 @@ public class ProviderAnalyticsServiceImpl implements ProviderAnalyticsService {
     @Override
     public List<Map<String,Object>> getJobStatusDistribution(String providerEmail) {
 
-        Long providerId = getProviderId(providerEmail);
+        Long providerId = getProvider(providerEmail).getId();
 
         List<Object[]> results =
                 bookingRepository.getJobStatusDistribution(providerId);
@@ -114,7 +120,7 @@ public class ProviderAnalyticsServiceImpl implements ProviderAnalyticsService {
     @Override
     public List<Map<String,Object>> getTopServices(String providerEmail) {
 
-        Long providerId = getProviderId(providerEmail);
+        Long providerId = getProvider(providerEmail).getId();
 
         List<Object[]> results =
                 bookingRepository.getTopServices(providerId);
