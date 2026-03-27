@@ -34,7 +34,9 @@ const NotificationBell = () => {
 
     loadNotifications();
 
-    const socket = new SockJS(`${WS_BASE_URL}/ws`);
+    const socket = new SockJS(`${WS_BASE_URL}/ws`, undefined, {
+      transports: ["xhr-streaming", "xhr-polling"],
+    });
     const stompClient = new Client({
       webSocketFactory: () => socket,
       reconnectDelay: 5000,

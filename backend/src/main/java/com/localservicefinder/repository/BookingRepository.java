@@ -31,6 +31,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByServiceProvider(User provider);
 
+    @Query("""
+        SELECT b
+        FROM Booking b
+        WHERE b.service.provider = :provider
+        AND b.status = :status
+    """)
+    List<Booking> findCompletedBookingsForProvider(@Param("provider") User provider,
+                                                   @Param("status") BookingStatus status);
+
     long countByServiceProvider(User provider);
 
     long countByServiceProviderAndStatus(User provider, BookingStatus status);
@@ -106,18 +115,6 @@ List<Object[]> getCategoryPerformance(Long providerId);
 /* =====================================================
     PROVIDER ANALYTICS - MONTHLY EARNINGS
 ===================================================== */
-
-@Query("""
-SELECT FUNCTION('MONTH', b.serviceDate), COALESCE(SUM(b.providerEarning), 0)
-FROM Booking b
-WHERE b.service.provider.id = :providerId
-AND b.status = 'COMPLETED'
-GROUP BY FUNCTION('MONTH', b.serviceDate)
-ORDER BY FUNCTION('MONTH', b.serviceDate)
-""")
-List<Object[]> getMonthlyEarnings(Long providerId);
-
-
 
 /* =====================================================
     PROVIDER ANALYTICS - JOB STATUS

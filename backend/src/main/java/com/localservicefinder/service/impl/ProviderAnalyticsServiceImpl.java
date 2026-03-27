@@ -2,6 +2,8 @@ package com.localservicefinder.service.impl;
 
 import com.localservicefinder.exception.NotFoundException;
 import com.localservicefinder.exception.UnauthorizedException;
+import com.localservicefinder.model.Booking;
+import com.localservicefinder.model.BookingStatus;
 import com.localservicefinder.model.Role;
 import com.localservicefinder.model.User;
 import com.localservicefinder.repository.BookingRepository;
@@ -68,19 +70,29 @@ public class ProviderAnalyticsServiceImpl implements ProviderAnalyticsService {
     @Override
     public List<Map<String,Object>> getMonthlyEarnings(String providerEmail) {
 
-        Long providerId = getProvider(providerEmail).getId();
+        User provider = getProvider(providerEmail);
+        List<Booking> completedBookings =
+                bookingRepository.findCompletedBookingsForProvider(provider, BookingStatus.COMPLETED);
+        Map<Integer, Double> earningsByMonth = new TreeMap<>();
 
-        List<Object[]> results =
-                bookingRepository.getMonthlyEarnings(providerId);
+        for (Booking booking : completedBookings) {
+            if (booking.getServiceDate() == null) {
+                continue;
+            }
+
+            int month = booking.getServiceDate().getMonthValue();
+            double earning = booking.getProviderEarning() == null ? 0.0 : booking.getProviderEarning();
+            earningsByMonth.merge(month, earning, Double::sum);
+        }
 
         List<Map<String,Object>> response = new ArrayList<>();
 
-        for(Object[] row : results){
+        for (Map.Entry<Integer, Double> entry : earningsByMonth.entrySet()) {
 
             Map<String,Object> map = new HashMap<>();
 
-            map.put("month", row[0]);
-            map.put("earnings", row[1] == null ? 0 : row[1]);
+            map.put("month", entry.getKey());
+            map.put("earnings", entry.getValue());
 
             response.add(map);
         }
