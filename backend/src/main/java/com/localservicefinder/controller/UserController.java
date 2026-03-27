@@ -41,9 +41,12 @@ public class UserController {
     @GetMapping("/profile")
     public User getProfile(Authentication authentication) {
 
-        return userRepository
+        User user = userRepository
                 .findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setProfileImage(toPublicImageUrl(user.getProfileImage()));
+        return user;
     }
 
     @PutMapping(value = "/profile", consumes = "multipart/form-data")
@@ -79,6 +82,27 @@ public class UserController {
         }
 
         return userRepository.save(user);
+    }
+
+    private String toPublicImageUrl(String imageUrl) {
+        if (!StringUtils.hasText(imageUrl)) {
+            return imageUrl;
+        }
+
+        if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://") || imageUrl.startsWith("blob:")) {
+            return imageUrl;
+        }
+
+        if (!StringUtils.hasText(publicBaseUrl)) {
+            return imageUrl;
+        }
+
+        String normalizedBaseUrl = publicBaseUrl.endsWith("/")
+                ? publicBaseUrl.substring(0, publicBaseUrl.length() - 1)
+                : publicBaseUrl;
+        String normalizedPath = imageUrl.startsWith("/") ? imageUrl : "/" + imageUrl;
+
+        return normalizedBaseUrl + normalizedPath;
     }
 
     private String resolveBaseUrl(HttpServletRequest request) {

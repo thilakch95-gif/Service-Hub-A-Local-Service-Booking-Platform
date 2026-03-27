@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import NotificationBell from "./NotificationBell";
 import BrandLogo from "./BrandLogo";
+import { getImageUrl } from "../utils/image";
 
 const Navbar = () => {
 
@@ -53,7 +54,7 @@ const Navbar = () => {
 
           <img
             src={
-              user?.profileImage ||
+              getImageUrl(user?.profileImage) ||
               "https://cdn-icons-png.flaticon.com/512/149/149071.png"
             }
             alt="profile"

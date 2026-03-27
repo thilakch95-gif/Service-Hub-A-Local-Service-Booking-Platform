@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Camera, Phone, Save, UserRound } from "lucide-react";
 import client from "../api/client";
 import { useAuth } from "../context/AuthContext";
+import { getImageUrl } from "../utils/image";
 
 const Profile = () => {
   const { updateUser } = useAuth();
@@ -160,7 +161,7 @@ const Profile = () => {
           >
             {profile.profileImage ? (
               <img
-                src={profile.profileImage}
+                src={getImageUrl(profile.profileImage)}
                 alt="Profile"
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />

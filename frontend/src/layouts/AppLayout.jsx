@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import NotificationBell from "../components/NotificationBell";
 import BrandLogo from "../components/BrandLogo";
+import { getImageUrl } from "../utils/image";
 
 const linksByRole = {
   USER: [
@@ -127,7 +128,7 @@ const AppLayout = () => {
           >
             {user?.profileImage ? (
               <img
-                src={user.profileImage}
+                src={getImageUrl(user.profileImage)}
                 alt={user.fullName}
                 style={{
                   width: "54px",
@@ -388,7 +389,7 @@ const AppLayout = () => {
               >
                 {user?.profileImage ? (
                   <img
-                    src={user.profileImage}
+                    src={getImageUrl(user.profileImage)}
                     alt={user.fullName}
                     style={{
                       width: "34px",
