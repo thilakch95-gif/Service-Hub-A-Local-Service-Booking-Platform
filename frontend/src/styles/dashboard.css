@@ -1,0 +1,491 @@
+/* ============================================================
+   DASHBOARD THEME — Dark + Light Mode
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ============================================================
+   DARK MODE VARIABLES (default)
+   ============================================================ */
+:root {
+  --bg-void:        #010409;
+  --bg-deep:        #030810;
+  --bg-card:        rgba(6, 14, 28, 0.98);
+  --bg-card-hover:  rgba(8, 18, 36, 0.99);
+  --bg-input:       #040c1c;
+  --bg-hover:       #071830;
+  --bg-dropdown:    #040e1c;
+  --bg-dropdown-hover: #071830;
+
+  --green-core:     #22c55e;
+  --green-bright:   #4ade80;
+  --green-dim:      #16a34a;
+  --green-glow-sm:  0 0 14px rgba(34, 197, 94, 0.45);
+  --green-glow-md:  0 0 26px rgba(34, 197, 94, 0.65);
+  --green-glow-lg:  0 0 44px rgba(34, 197, 94, 0.88);
+  --green-glow-xl:  0 0 72px rgba(34, 197, 94, 0.48);
+
+  --border-faint:   1px solid rgba(34, 197, 94, 0.14);
+  --border-mid:     1px solid rgba(34, 197, 94, 0.24);
+  --border-bright:  1px solid rgba(34, 197, 94, 0.48);
+
+  --text-white:     #eef4ff;
+  --text-muted:     #7a8ba8;
+  --text-dim:       #3d4f6a;
+
+  --card-shadow:    0 4px 24px rgba(0, 0, 0, 0.65), 0 1px 0 rgba(255,255,255,0.03);
+  --card-shadow-hover: 0 0 32px rgba(34, 197, 94, 0.14), 0 12px 48px rgba(0,0,0,0.70);
+  --panel-shadow:   0 4px 32px rgba(0, 0, 0, 0.55);
+  --booking-shadow: 0 4px 40px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(34, 197, 94, 0.07);
+
+  --table-row-border: rgba(34, 197, 94, 0.08);
+  --table-row-hover:  rgba(34, 197, 94, 0.04);
+
+  --status-approved-shadow: 0 0 10px rgba(74, 222, 128, 0.50);
+  --price-shadow:   0 0 14px rgba(74, 222, 128, 0.45);
+
+  --radius-card:    16px;
+  --radius-btn:     10px;
+  --radius-input:   10px;
+
+  --scrollbar-track: #010409;
+}
+
+/* ============================================================
+   LIGHT MODE VARIABLES
+   ============================================================ */
+.light-mode {
+  --bg-void:        #f0f7f2;
+  --bg-deep:        #e8f4ec;
+  --bg-card:        #ffffff;
+  --bg-card-hover:  #f6fdf8;
+  --bg-input:       #f0f7f2;
+  --bg-hover:       #e4f0e8;
+  --bg-dropdown:    #ffffff;
+  --bg-dropdown-hover: #f0f7f2;
+
+  --green-core:     #22c55e;
+  --green-bright:   #16a34a;
+  --green-dim:      #15803d;
+  --green-glow-sm:  0 0 10px rgba(34, 197, 94, 0.20);
+  --green-glow-md:  0 0 20px rgba(34, 197, 94, 0.35);
+  --green-glow-lg:  0 0 32px rgba(34, 197, 94, 0.55);
+  --green-glow-xl:  0 0 48px rgba(34, 197, 94, 0.30);
+
+  --border-faint:   1px solid rgba(34, 197, 94, 0.22);
+  --border-mid:     1px solid rgba(34, 197, 94, 0.35);
+  --border-bright:  1px solid rgba(34, 197, 94, 0.60);
+
+  --text-white:     #0a1a0f;
+  --text-muted:     #4a6a50;
+  --text-dim:       #7a9a80;
+
+  --card-shadow:    0 2px 16px rgba(34, 197, 94, 0.08), 0 1px 0 rgba(34,197,94,0.06);
+  --card-shadow-hover: 0 0 24px rgba(34, 197, 94, 0.18), 0 8px 32px rgba(0,0,0,0.10);
+  --panel-shadow:   0 2px 16px rgba(34, 197, 94, 0.08);
+  --booking-shadow: 0 2px 20px rgba(34, 197, 94, 0.08);
+
+  --table-row-border: rgba(34, 197, 94, 0.12);
+  --table-row-hover:  rgba(34, 197, 94, 0.06);
+
+  --status-approved-shadow: none;
+  --price-shadow:   none;
+
+  --scrollbar-track: #f0f7f2;
+}
+
+/* ---------- Global Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ============================================================
+   DASHBOARD ROOT
+   ============================================================ */
+.dashboard-night {
+  font-family: 'Space Grotesk', sans-serif;
+  background-color: var(--bg-void);
+  color: var(--text-white);
+  min-height: 100vh;
+  transition: background-color 0.3s, color 0.3s;
+
+  background-image:
+    radial-gradient(ellipse 80% 45% at 50% -5%, rgba(34, 197, 94, 0.09) 0%, transparent 65%),
+    radial-gradient(circle at 10% 90%, rgba(34, 197, 94, 0.05) 0%, transparent 40%);
+}
+
+.light-mode .dashboard-night {
+  background-image:
+    radial-gradient(ellipse 80% 45% at 50% -5%, rgba(34, 197, 94, 0.06) 0%, transparent 65%),
+    radial-gradient(circle at 10% 90%, rgba(34, 197, 94, 0.03) 0%, transparent 40%);
+}
+
+/* ============================================================
+   WELCOME PANEL
+   ============================================================ */
+.dashboard-night > div:first-child {
+  background: var(--bg-card) !important;
+  border: var(--border-mid) !important;
+  border-radius: var(--radius-card) !important;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--panel-shadow) !important;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.dashboard-night > div:first-child::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--green-bright), transparent);
+  opacity: 0.55;
+}
+
+.dashboard-night h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-white) !important;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.dashboard-night h1 span,
+.dashboard-night h1 > *:last-child {
+  color: var(--green-bright);
+}
+
+.dashboard-night p {
+  color: var(--text-muted) !important;
+  font-size: 0.9rem;
+  letter-spacing: 0.01em;
+}
+
+/* ============================================================
+   SEARCH PANEL
+   ============================================================ */
+.dashboard-night > div:nth-child(2) {
+  background: var(--bg-card) !important;
+  border: var(--border-mid) !important;
+  border-radius: var(--radius-card) !important;
+  box-shadow: var(--panel-shadow) !important;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.dashboard-night select {
+  background: var(--bg-input) !important;
+  color: var(--text-white) !important;
+  border: none;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: background 0.3s, color 0.3s;
+}
+
+.dashboard-night select option {
+  background: var(--bg-input);
+  color: var(--text-white);
+}
+
+.dashboard-night select:focus { outline: none; }
+
+.dashboard-night .flex.items-center.gap-2.bg-\[#0A0F1C\] {
+  background: var(--bg-input) !important;
+  border: var(--border-faint) !important;
+  border-radius: var(--radius-input) !important;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.3s;
+}
+
+.dashboard-night .flex.items-center.gap-2.bg-\[#0A0F1C\]:focus-within {
+  border-color: rgba(34, 197, 94, 0.45) !important;
+  box-shadow: var(--green-glow-sm);
+}
+
+.dashboard-night input {
+  background: var(--bg-input) !important;
+  color: var(--text-white) !important;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  border: none !important;
+  outline: none !important;
+  width: 180px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.dashboard-night input::placeholder {
+  color: var(--text-dim) !important;
+}
+
+.dashboard-night .flex.items-center svg {
+  color: var(--green-core) !important;
+  opacity: 0.85;
+}
+
+/* Autocomplete dropdown */
+.dashboard-night .absolute.w-full.rounded {
+  background: var(--bg-dropdown) !important;
+  border: var(--border-mid) !important;
+  border-radius: 10px !important;
+  overflow: hidden;
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.25), var(--green-glow-sm);
+}
+
+.dashboard-night .absolute.w-full.rounded > div {
+  color: var(--text-white) !important;
+  font-size: 0.88rem;
+  padding: 10px 14px !important;
+  transition: background 0.15s, color 0.15s;
+}
+
+.dashboard-night .absolute.w-full.rounded > div:hover {
+  background: var(--bg-dropdown-hover) !important;
+  color: var(--green-bright) !important;
+}
+
+/* ============================================================
+   SEARCH BUTTON
+   ============================================================ */
+.dashboard-night button.bg-green-500,
+.dashboard-night .bg-green-500 {
+  background: var(--green-core) !important;
+  color: #000 !important;
+  font-weight: 700 !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  letter-spacing: 0.03em !important;
+  border-radius: var(--radius-btn) !important;
+  border: none !important;
+  box-shadow: var(--green-glow-md) !important;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s !important;
+  cursor: pointer;
+}
+
+.dashboard-night button.bg-green-500:hover,
+.dashboard-night .bg-green-500:hover,
+.dashboard-night button.hover\:bg-green-600:hover {
+  background: var(--green-dim) !important;
+  box-shadow: var(--green-glow-lg) !important;
+  transform: translateY(-1px) !important;
+}
+
+.dashboard-night button.bg-green-500:active {
+  transform: translateY(0) scale(0.98) !important;
+}
+
+/* ============================================================
+   SERVICES SECTION HEADING
+   ============================================================ */
+.dashboard-night h2 {
+  color: var(--text-white) !important;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dashboard-night h2::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 1.1em;
+  background: var(--green-bright);
+  border-radius: 2px;
+  box-shadow: var(--green-glow-sm);
+}
+
+/* ============================================================
+   SERVICE CARDS
+   ============================================================ */
+.dashboard-night .grid > div {
+  background: var(--bg-card) !important;
+  border: var(--border-faint) !important;
+  border-radius: var(--radius-card) !important;
+  box-shadow: var(--card-shadow) !important;
+  transition: transform 0.28s cubic-bezier(.22,.68,0,1.4), border-color 0.25s, box-shadow 0.25s, background 0.3s !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-night .grid > div::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 15%; right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(74,222,128,0.35), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.dashboard-night .grid > div:hover::before { opacity: 1; }
+
+.dashboard-night .grid > div:hover {
+  border-color: rgba(34, 197, 94, 0.35) !important;
+  box-shadow: var(--card-shadow-hover) !important;
+  transform: translateY(-6px) !important;
+  background: var(--bg-card-hover) !important;
+}
+
+.dashboard-night .grid > div img {
+  width: 64px !important;
+  height: 64px !important;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.35));
+  margin-bottom: 12px;
+  border-radius: 12px;
+}
+
+.dashboard-night .grid > div h3 {
+  color: var(--text-white) !important;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.dashboard-night .grid > div p.text-gray-400 {
+  color: var(--text-muted) !important;
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+.dashboard-night .grid > div p.font-bold {
+  color: var(--green-bright) !important;
+  font-size: 1.15rem;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: -0.01em;
+  margin-top: 6px;
+  text-shadow: var(--price-shadow);
+}
+
+.dashboard-night .grid > div button {
+  background: var(--green-core) !important;
+  color: #000 !important;
+  font-weight: 700 !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  letter-spacing: 0.04em !important;
+  border-radius: 9px !important;
+  border: none !important;
+  box-shadow: var(--green-glow-md) !important;
+  transition: all 0.2s ease !important;
+  margin-top: 16px;
+  font-size: 0.88rem;
+}
+
+.dashboard-night .grid > div button:hover {
+  background: #1fd966 !important;
+  box-shadow: var(--green-glow-xl), 0 0 26px rgba(34,197,94,0.80) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ============================================================
+   RIPPLE EFFECT
+   ============================================================ */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(74, 222, 128, 0.15);
+  transform: scale(0);
+  animation: ripple-anim 0.55s linear;
+  pointer-events: none;
+}
+
+@keyframes ripple-anim {
+  to { transform: scale(3.5); opacity: 0; }
+}
+
+/* ============================================================
+   MY BOOKINGS PANEL
+   ============================================================ */
+.dashboard-night > div:last-child {
+  background: var(--bg-card) !important;
+  border: var(--border-mid) !important;
+  border-radius: var(--radius-card) !important;
+  box-shadow: var(--booking-shadow) !important;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.dashboard-night h3 {
+  color: var(--text-white) !important;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.dashboard-night h3 svg {
+  color: var(--green-core) !important;
+}
+
+.dashboard-night table thead th {
+  color: var(--text-muted) !important;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding-bottom: 12px;
+}
+
+.dashboard-night table tbody tr {
+  border-top: 1px solid var(--table-row-border) !important;
+  transition: background 0.15s;
+}
+
+.dashboard-night table tbody tr:hover {
+  background: var(--table-row-hover);
+}
+
+.dashboard-night table tbody td {
+  color: var(--text-white) !important;
+  font-size: 0.9rem;
+  padding: 13px 0;
+}
+
+.dashboard-night table tbody td:nth-child(2) {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--text-muted) !important;
+}
+
+.dashboard-night table tbody td.text-green-400 {
+  color: var(--green-bright) !important;
+  text-shadow: var(--status-approved-shadow);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.dashboard-night table tbody td.text-red-400 {
+  color: #fb7185 !important;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb {
+  background: rgba(34, 197, 94, 0.22);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(74, 222, 128, 0.42);
+}
+
+/* ============================================================
+   SELECTION COLOR
+   ============================================================ */
+::selection {
+  background: rgba(74, 222, 128, 0.22);
+  color: var(--text-white);
+}
+.stat-card{
+background:#ffffff;
+padding:16px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,0.05);
+text-align:center;
+min-width:120px;
+font-weight:600;
+}

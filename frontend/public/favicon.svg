@@ -1,0 +1,56 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="4" y="4" width="56" height="56" rx="18" fill="url(#shell)" />
+  <rect x="5" y="5" width="54" height="54" rx="17" stroke="rgba(255,255,255,0.12)" />
+  <rect x="13" y="13" width="38" height="38" rx="13" fill="rgba(255,255,255,0.06)" />
+  <circle cx="32" cy="31" r="18" fill="url(#glow)" />
+
+  <path
+    d="M32 8C22.6112 8 15 15.6112 15 25C15 37.0397 23.5879 45.6571 30.2696 52.75C31.2329 53.7723 32.7671 53.7723 33.7304 52.75C40.4121 45.6571 49 37.0397 49 25C49 15.6112 41.3888 8 32 8Z"
+    fill="url(#pin)"
+  />
+  <path
+    d="M32 8C22.6112 8 15 15.6112 15 25C15 37.0397 23.5879 45.6571 30.2696 52.75C31.2329 53.7723 32.7671 53.7723 33.7304 52.75C40.4121 45.6571 49 37.0397 49 25C49 15.6112 41.3888 8 32 8Z"
+    stroke="rgba(255,255,255,0.14)"
+    stroke-width="1.2"
+  />
+  <path
+    d="M24 15.6C26.6448 12.5333 30.1234 11 34.4358 11C37.5606 11 40.4945 11.9774 43.2375 13.9323"
+    stroke="rgba(255,255,255,0.2)"
+    stroke-width="1.8"
+    stroke-linecap="round"
+  />
+
+  <rect x="29.6" y="17.2" width="4.8" height="5.4" rx="1.4" fill="rgba(8,15,29,0.88)" />
+  <rect x="41.4" y="26.4" width="5.4" height="4.8" rx="1.4" fill="rgba(8,15,29,0.88)" />
+  <rect x="29.6" y="39.4" width="4.8" height="5.4" rx="1.4" fill="rgba(8,15,29,0.88)" />
+  <rect x="17.2" y="26.4" width="5.4" height="4.8" rx="1.4" fill="rgba(8,15,29,0.88)" />
+  <path
+    d="M32 20.5L39.5 24.8V33.2L32 37.5L24.5 33.2V24.8L32 20.5Z"
+    fill="rgba(8,15,29,0.88)"
+    stroke="rgba(255,255,255,0.14)"
+    stroke-width="1"
+  />
+  <path
+    d="M27.7 29.7L30.7 32.7L36.5 26.9"
+    stroke="white"
+    stroke-width="3.3"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <defs>
+    <linearGradient id="shell" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#08101D" />
+      <stop offset="0.58" stop-color="#12213A" />
+      <stop offset="1" stop-color="#0B1728" />
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(28 24) rotate(47.7263) scale(27.7359)">
+      <stop stop-color="#60A5FA" stop-opacity="0.24" />
+      <stop offset="1" stop-color="#14B8A6" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="pin" x1="18" y1="12" x2="48" y2="50" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#60A5FA" />
+      <stop offset="1" stop-color="#14B8A6" />
+    </linearGradient>
+  </defs>
+</svg>
