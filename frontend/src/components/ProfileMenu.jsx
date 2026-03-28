@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, LogOut, Settings } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import { getImageUrl } from "../utils/image";
 
 const ProfileMenu = ({ user }) => {
 
@@ -45,7 +44,7 @@ const ProfileMenu = ({ user }) => {
         {user?.profileImage ? (
 
           <img
-            src={getImageUrl(user.profileImage)}
+            src={user.profileImage}
             alt="profile"
             style={{
               width: "32px",

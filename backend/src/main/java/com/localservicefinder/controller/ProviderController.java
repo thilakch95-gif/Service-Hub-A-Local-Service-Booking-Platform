@@ -9,8 +9,6 @@ import com.localservicefinder.repository.ServiceRepository;
 import com.localservicefinder.service.RatingService;
 import com.localservicefinder.service.ServiceManagementService;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.PageRequest;
 
@@ -24,19 +22,15 @@ public class ProviderController {
     private final ServiceRepository serviceRepository;
     private final ServiceManagementService serviceManagementService;
     private final RatingService ratingService;
-    private final String baseUrl;
 
     public ProviderController(UserRepository userRepository,
                               ServiceRepository serviceRepository,
                               ServiceManagementService serviceManagementService,
-                              RatingService ratingService,
-                              @Value("${app.public-base-url:}") String baseUrl) {
+                              RatingService ratingService) {
         this.userRepository = userRepository;
         this.serviceRepository = serviceRepository;
         this.serviceManagementService = serviceManagementService;
         this.ratingService = ratingService;
-        this.baseUrl = normalizeBaseUrl(baseUrl);
-        System.out.println("BASE URL: " + this.baseUrl);
     }
 
     /* PROVIDER PROFILE */
@@ -53,7 +47,7 @@ public class ProviderController {
                 provider.getEmail(),
                 provider.getPhone(),
                 provider.getBio(),
-                toPublicImageUrl(provider.getProfileImage())
+                provider.getProfileImage()
         );
     }
 
@@ -79,39 +73,5 @@ public class ProviderController {
     public List<RatingResponse> getProviderReviews(@PathVariable Long id) {
 
         return ratingService.getProviderRatings(id);
-    }
-
-    private String toPublicImageUrl(String imageUrl) {
-        if (!StringUtils.hasText(imageUrl)) {
-            return imageUrl;
-        }
-
-        if (imageUrl.startsWith("blob:")) {
-            return imageUrl;
-        }
-
-        if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
-            int uploadsIndex = imageUrl.indexOf("/uploads/");
-            if (uploadsIndex >= 0 && StringUtils.hasText(baseUrl) && !imageUrl.startsWith(baseUrl + "/")) {
-                return baseUrl + imageUrl.substring(uploadsIndex);
-            }
-            return imageUrl;
-        }
-
-        if (!StringUtils.hasText(baseUrl)) {
-            return imageUrl;
-        }
-
-        String normalizedPath = imageUrl.startsWith("/") ? imageUrl : "/" + imageUrl;
-
-        return baseUrl + normalizedPath;
-    }
-
-    private String normalizeBaseUrl(String value) {
-        if (!StringUtils.hasText(value)) {
-            return "";
-        }
-
-        return value.endsWith("/") ? value.substring(0, value.length() - 1) : value;
     }
 }

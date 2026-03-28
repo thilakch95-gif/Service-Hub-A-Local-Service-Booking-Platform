@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { MapPin, Phone, Star, Wrench } from "lucide-react";
 import { getProviderProfile, getProviderReviews, getProviderServices } from "../api/providerApi";
-import { getImageUrl } from "../utils/image";
 
 const categoryThemes = {
   Cleaning: {
@@ -116,7 +115,7 @@ const ProviderProfile = () => {
           <div style={{ display: "flex", gap: "18px", alignItems: "center", flexWrap: "wrap" }}>
             {provider.profileImage ? (
               <img
-                src={getImageUrl(provider.profileImage)}
+                src={provider.profileImage}
                 alt={provider.fullName}
                 style={{
                   width: "108px",

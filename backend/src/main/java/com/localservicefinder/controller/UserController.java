@@ -4,20 +4,14 @@ import com.localservicefinder.dto.ChangeEmailRequest;
 import com.localservicefinder.dto.ChangePasswordRequest;
 import com.localservicefinder.model.User;
 import com.localservicefinder.repository.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Value;
+import com.localservicefinder.service.CloudinaryImageService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/api/users")
@@ -25,18 +19,14 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final Path uploadPath;
-    private final String baseUrl;
+    private final CloudinaryImageService cloudinaryImageService;
 
     public UserController(UserRepository userRepository,
                           PasswordEncoder passwordEncoder,
-                          @Value("${app.upload-dir}") String uploadDir,
-                          @Value("${app.public-base-url:}") String baseUrl) {
+                          CloudinaryImageService cloudinaryImageService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
-        this.baseUrl = normalizeBaseUrl(baseUrl);
-        System.out.println("BASE URL: " + this.baseUrl);
+        this.cloudinaryImageService = cloudinaryImageService;
     }
 
     @GetMapping("/profile")
@@ -46,14 +36,12 @@ public class UserController {
                 .findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setProfileImage(toPublicImageUrl(user.getProfileImage()));
         return user;
     }
 
     @PutMapping(value = "/profile", consumes = "multipart/form-data")
     public User updateProfile(
             Authentication authentication,
-            HttpServletRequest request,
             @RequestParam String fullName,
             @RequestParam(required = false) String phone,
             @RequestParam(required = false) String bio,
@@ -69,70 +57,10 @@ public class UserController {
         user.setBio(bio != null ? bio : "");
 
         if (profileImage != null && !profileImage.isEmpty()) {
-            Files.createDirectories(uploadPath);
-
-            String originalFileName = StringUtils.cleanPath(profileImage.getOriginalFilename());
-            String safeFileName = originalFileName.replace(" ", "_");
-            String fileName = System.currentTimeMillis() + "_" + safeFileName;
-
-            Path file = uploadPath.resolve(fileName);
-            profileImage.transferTo(file);
-
-            String resolvedBaseUrl = resolveBaseUrl(request);
-            String imageUrl = resolvedBaseUrl + "/uploads/" + fileName;
-            System.out.println("BASE URL: " + resolvedBaseUrl);
-            System.out.println("IMAGE URL: " + imageUrl);
-            user.setProfileImage(imageUrl);
+            user.setProfileImage(cloudinaryImageService.uploadProfileImage(profileImage));
         }
 
-        User savedUser = userRepository.save(user);
-        savedUser.setProfileImage(toPublicImageUrl(savedUser.getProfileImage()));
-        return savedUser;
-    }
-
-    private String toPublicImageUrl(String imageUrl) {
-        if (!StringUtils.hasText(imageUrl)) {
-            return imageUrl;
-        }
-
-        if (imageUrl.startsWith("blob:")) {
-            return imageUrl;
-        }
-
-        if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
-            int uploadsIndex = imageUrl.indexOf("/uploads/");
-            if (uploadsIndex >= 0 && StringUtils.hasText(baseUrl) && !imageUrl.startsWith(baseUrl + "/")) {
-                return baseUrl + imageUrl.substring(uploadsIndex);
-            }
-            return imageUrl;
-        }
-
-        if (!StringUtils.hasText(baseUrl)) {
-            return imageUrl;
-        }
-
-        String normalizedPath = imageUrl.startsWith("/") ? imageUrl : "/" + imageUrl;
-
-        return baseUrl + normalizedPath;
-    }
-
-    private String resolveBaseUrl(HttpServletRequest request) {
-        if (StringUtils.hasText(baseUrl)) {
-            return baseUrl;
-        }
-
-        return ServletUriComponentsBuilder.fromRequestUri(request)
-                .replacePath(null)
-                .build()
-                .toUriString();
-    }
-
-    private String normalizeBaseUrl(String value) {
-        if (!StringUtils.hasText(value)) {
-            return "";
-        }
-
-        return value.endsWith("/") ? value.substring(0, value.length() - 1) : value;
+        return userRepository.save(user);
     }
 
     @PostMapping("/change-password")
