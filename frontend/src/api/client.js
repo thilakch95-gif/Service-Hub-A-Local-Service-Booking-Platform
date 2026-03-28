@@ -86,6 +86,7 @@ client.interceptors.response.use(
       console.warn("Unauthorized - redirecting to login");
 
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
       window.location.href = "/login";
     }
 

@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { Navigate, Routes, Route } from "react-router-dom";
+import { WS_BASE_URL } from "./api/client";
 
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
@@ -30,6 +32,17 @@ import UserBookings from "./pages/user/UserBookings";
 import UserReviews from "./pages/user/UserReviews";
 
 const App = () => {
+  useEffect(() => {
+    if (!WS_BASE_URL) {
+      return;
+    }
+
+    fetch(WS_BASE_URL, {
+      method: "GET",
+      mode: "no-cors",
+      cache: "no-store",
+    }).catch(() => {});
+  }, []);
 
   return (
 

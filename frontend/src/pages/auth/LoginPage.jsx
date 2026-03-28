@@ -192,6 +192,20 @@ const LoginPage = () => {
               </div>
             )}
 
+            {isSubmitting && (
+              <div
+                className="panel-soft"
+                style={{
+                  padding: "14px 16px",
+                  borderColor: "rgba(59,130,246,0.22)",
+                  color: "var(--text-primary)",
+                  background: "rgba(59,130,246,0.08)",
+                }}
+              >
+                Starting server... please wait (first login may take 30 seconds)
+              </div>
+            )}
+
             <div>
               <label className="field-label">Email Address</label>
               <div className="field-shell">
@@ -201,6 +215,7 @@ const LoginPage = () => {
                   placeholder="you@example.com"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
@@ -214,10 +229,12 @@ const LoginPage = () => {
                   placeholder="Enter your password"
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  disabled={isSubmitting}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
+                  disabled={isSubmitting}
                   style={{
                     border: 0,
                     background: "transparent",

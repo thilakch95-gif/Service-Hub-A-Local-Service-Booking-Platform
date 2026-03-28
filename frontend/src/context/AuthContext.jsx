@@ -3,16 +3,27 @@ import client from "../api/client";
 
 const AuthContext = createContext(null);
 
+const readStoredUser = () => {
+  try {
+    const raw = localStorage.getItem("user");
+    if (!raw || raw === "undefined") return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+};
+
+const readStoredToken = () => {
+  try {
+    return localStorage.getItem("token");
+  } catch {
+    return null;
+  }
+};
+
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    try {
-      const raw = localStorage.getItem("user");
-      if (!raw || raw === "undefined") return null;
-      return JSON.parse(raw);
-    } catch {
-      return null;
-    }
-  });
+  const [user, setUser] = useState(readStoredUser);
+  const [isBootstrapping, setIsBootstrapping] = useState(() => Boolean(readStoredToken()) && !readStoredUser());
 
   const persistUser = useCallback((nextUser) => {
     localStorage.setItem("user", JSON.stringify(nextUser));
@@ -24,16 +35,7 @@ export const AuthProvider = ({ children }) => {
   const loadProfile = useCallback(async (baseUser = null) => {
     try {
       const res = await client.get("/users/profile");
-      const currentUser =
-        baseUser ||
-        (() => {
-          try {
-            const raw = localStorage.getItem("user");
-            return raw ? JSON.parse(raw) : null;
-          } catch {
-            return null;
-          }
-        })();
+      const currentUser = baseUser || readStoredUser();
 
       const updatedUser = {
         ...currentUser,
@@ -51,6 +53,8 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       console.log("Profile load error:", err);
       return baseUser;
+    } finally {
+      setIsBootstrapping(false);
     }
   }, [persistUser]);
 
@@ -67,14 +71,17 @@ export const AuthProvider = ({ children }) => {
       profileImage: payload.profileImage || null,
       active: payload.active ?? true,
     };
-    persistUser(baseUser);
-    return loadProfile(baseUser);
+    const persistedUser = persistUser(baseUser);
+    setIsBootstrapping(false);
+    void loadProfile(baseUser);
+    return persistedUser;
   }, [loadProfile, persistUser]);
 
   /* LOGOUT */
   const logout = useCallback(() => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    setIsBootstrapping(false);
     setUser(null);
   }, []);
 
@@ -89,19 +96,29 @@ export const AuthProvider = ({ children }) => {
 
   /* AUTO LOAD PROFILE WHEN APP STARTS */
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      loadProfile();
+    const token = readStoredToken();
+    const storedUser = readStoredUser();
+
+    if (!token) {
+      setIsBootstrapping(false);
+      return;
     }
+
+    if (!storedUser) {
+      setIsBootstrapping(true);
+    }
+
+    void loadProfile(storedUser);
   }, [loadProfile]);
 
   const value = useMemo(() => ({
     user,
+    isBootstrapping,
     login,
     logout,
     updateUser,
     loadProfile
-  }), [loadProfile, login, logout, updateUser, user]);
+  }), [isBootstrapping, loadProfile, login, logout, updateUser, user]);
 
   return (
     <AuthContext.Provider value={value}>
