@@ -24,18 +24,19 @@ public class ProviderController {
     private final ServiceRepository serviceRepository;
     private final ServiceManagementService serviceManagementService;
     private final RatingService ratingService;
-    private final String publicBaseUrl;
+    private final String baseUrl;
 
     public ProviderController(UserRepository userRepository,
                               ServiceRepository serviceRepository,
                               ServiceManagementService serviceManagementService,
                               RatingService ratingService,
-                              @Value("${app.public-base-url:}") String publicBaseUrl) {
+                              @Value("${app.public-base-url:}") String baseUrl) {
         this.userRepository = userRepository;
         this.serviceRepository = serviceRepository;
         this.serviceManagementService = serviceManagementService;
         this.ratingService = ratingService;
-        this.publicBaseUrl = publicBaseUrl == null ? "" : publicBaseUrl.trim();
+        this.baseUrl = normalizeBaseUrl(baseUrl);
+        System.out.println("BASE URL: " + this.baseUrl);
     }
 
     /* PROVIDER PROFILE */
@@ -85,19 +86,32 @@ public class ProviderController {
             return imageUrl;
         }
 
-        if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://") || imageUrl.startsWith("blob:")) {
+        if (imageUrl.startsWith("blob:")) {
             return imageUrl;
         }
 
-        if (!StringUtils.hasText(publicBaseUrl)) {
+        if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+            int uploadsIndex = imageUrl.indexOf("/uploads/");
+            if (uploadsIndex >= 0 && StringUtils.hasText(baseUrl) && !imageUrl.startsWith(baseUrl + "/")) {
+                return baseUrl + imageUrl.substring(uploadsIndex);
+            }
             return imageUrl;
         }
 
-        String normalizedBaseUrl = publicBaseUrl.endsWith("/")
-                ? publicBaseUrl.substring(0, publicBaseUrl.length() - 1)
-                : publicBaseUrl;
+        if (!StringUtils.hasText(baseUrl)) {
+            return imageUrl;
+        }
+
         String normalizedPath = imageUrl.startsWith("/") ? imageUrl : "/" + imageUrl;
 
-        return normalizedBaseUrl + normalizedPath;
+        return baseUrl + normalizedPath;
+    }
+
+    private String normalizeBaseUrl(String value) {
+        if (!StringUtils.hasText(value)) {
+            return "";
+        }
+
+        return value.endsWith("/") ? value.substring(0, value.length() - 1) : value;
     }
 }

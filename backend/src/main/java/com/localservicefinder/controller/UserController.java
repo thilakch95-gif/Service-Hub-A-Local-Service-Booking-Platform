@@ -26,16 +26,17 @@ public class UserController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final Path uploadPath;
-    private final String publicBaseUrl;
+    private final String baseUrl;
 
     public UserController(UserRepository userRepository,
                           PasswordEncoder passwordEncoder,
                           @Value("${app.upload-dir}") String uploadDir,
-                          @Value("${app.public-base-url:}") String publicBaseUrl) {
+                          @Value("${app.public-base-url:}") String baseUrl) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
-        this.publicBaseUrl = publicBaseUrl == null ? "" : publicBaseUrl.trim();
+        this.baseUrl = normalizeBaseUrl(baseUrl);
+        System.out.println("BASE URL: " + this.baseUrl);
     }
 
     @GetMapping("/profile")
@@ -77,11 +78,16 @@ public class UserController {
             Path file = uploadPath.resolve(fileName);
             profileImage.transferTo(file);
 
-            String baseUrl = resolveBaseUrl(request);
-            user.setProfileImage(baseUrl + "/uploads/" + fileName);
+            String resolvedBaseUrl = resolveBaseUrl(request);
+            String imageUrl = resolvedBaseUrl + "/uploads/" + fileName;
+            System.out.println("BASE URL: " + resolvedBaseUrl);
+            System.out.println("IMAGE URL: " + imageUrl);
+            user.setProfileImage(imageUrl);
         }
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        savedUser.setProfileImage(toPublicImageUrl(savedUser.getProfileImage()));
+        return savedUser;
     }
 
     private String toPublicImageUrl(String imageUrl) {
@@ -89,33 +95,44 @@ public class UserController {
             return imageUrl;
         }
 
-        if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://") || imageUrl.startsWith("blob:")) {
+        if (imageUrl.startsWith("blob:")) {
             return imageUrl;
         }
 
-        if (!StringUtils.hasText(publicBaseUrl)) {
+        if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+            int uploadsIndex = imageUrl.indexOf("/uploads/");
+            if (uploadsIndex >= 0 && StringUtils.hasText(baseUrl) && !imageUrl.startsWith(baseUrl + "/")) {
+                return baseUrl + imageUrl.substring(uploadsIndex);
+            }
             return imageUrl;
         }
 
-        String normalizedBaseUrl = publicBaseUrl.endsWith("/")
-                ? publicBaseUrl.substring(0, publicBaseUrl.length() - 1)
-                : publicBaseUrl;
+        if (!StringUtils.hasText(baseUrl)) {
+            return imageUrl;
+        }
+
         String normalizedPath = imageUrl.startsWith("/") ? imageUrl : "/" + imageUrl;
 
-        return normalizedBaseUrl + normalizedPath;
+        return baseUrl + normalizedPath;
     }
 
     private String resolveBaseUrl(HttpServletRequest request) {
-        if (StringUtils.hasText(publicBaseUrl)) {
-            return publicBaseUrl.endsWith("/")
-                    ? publicBaseUrl.substring(0, publicBaseUrl.length() - 1)
-                    : publicBaseUrl;
+        if (StringUtils.hasText(baseUrl)) {
+            return baseUrl;
         }
 
         return ServletUriComponentsBuilder.fromRequestUri(request)
                 .replacePath(null)
                 .build()
                 .toUriString();
+    }
+
+    private String normalizeBaseUrl(String value) {
+        if (!StringUtils.hasText(value)) {
+            return "";
+        }
+
+        return value.endsWith("/") ? value.substring(0, value.length() - 1) : value;
     }
 
     @PostMapping("/change-password")
