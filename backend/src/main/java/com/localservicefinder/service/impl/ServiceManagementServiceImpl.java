@@ -6,6 +6,10 @@ import com.localservicefinder.exception.UnauthorizedException;
 import com.localservicefinder.model.Role;
 import com.localservicefinder.model.ServiceEntity;
 import com.localservicefinder.model.User;
+import com.localservicefinder.model.Booking;
+import com.localservicefinder.repository.BookingRepository;
+import com.localservicefinder.repository.PaymentRepository;
+import com.localservicefinder.repository.RatingRepository;
 import com.localservicefinder.repository.ServiceRepository;
 import com.localservicefinder.repository.UserRepository;
 import com.localservicefinder.service.ServiceManagementService;
@@ -18,11 +22,20 @@ public class ServiceManagementServiceImpl implements ServiceManagementService {
 
     private final ServiceRepository serviceRepository;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
+    private final PaymentRepository paymentRepository;
+    private final RatingRepository ratingRepository;
 
     public ServiceManagementServiceImpl(ServiceRepository serviceRepository,
-                                        UserRepository userRepository) {
+                                        UserRepository userRepository,
+                                        BookingRepository bookingRepository,
+                                        PaymentRepository paymentRepository,
+                                        RatingRepository ratingRepository) {
         this.serviceRepository = serviceRepository;
         this.userRepository = userRepository;
+        this.bookingRepository = bookingRepository;
+        this.paymentRepository = paymentRepository;
+        this.ratingRepository = ratingRepository;
     }
 
     @Override
@@ -65,6 +78,7 @@ public class ServiceManagementServiceImpl implements ServiceManagementService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id, String providerEmail) {
 
         ServiceEntity entity = serviceRepository.findById(id)
@@ -72,6 +86,17 @@ public class ServiceManagementServiceImpl implements ServiceManagementService {
 
         if (!entity.getProvider().getEmail().equals(providerEmail)) {
             throw new UnauthorizedException("Only service owner provider can delete this service");
+        }
+
+        java.util.List<Booking> relatedBookings = bookingRepository.findByService(entity);
+        java.util.List<Long> bookingIds = relatedBookings.stream()
+                .map(Booking::getId)
+                .toList();
+
+        if (!bookingIds.isEmpty()) {
+            ratingRepository.deleteByBookingIdIn(bookingIds);
+            paymentRepository.deleteByBookingIdIn(bookingIds);
+            bookingRepository.deleteAll(relatedBookings);
         }
 
         serviceRepository.delete(entity);

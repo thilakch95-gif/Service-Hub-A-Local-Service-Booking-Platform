@@ -27,6 +27,7 @@ const categoryThemes = {
 const ProviderServices = () => {
   const [services, setServices] = useState([]);
   const [form, setForm] = useState(emptyForm);
+  const [deletingId, setDeletingId] = useState(null);
 
   const loadServices = async () => {
     try {
@@ -65,8 +66,17 @@ const ProviderServices = () => {
 
   const deleteService = async (id) => {
     if (!window.confirm("Are you sure you want to delete this service?")) return;
-    await client.delete(`/services/${id}`);
-    loadServices();
+
+    try {
+      setDeletingId(id);
+      await client.delete(`/services/${id}`);
+      await loadServices();
+    } catch (err) {
+      console.log(err);
+      alert(err.response?.data?.message || "Unable to delete service right now");
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const getIcon = (service) => {
@@ -272,10 +282,11 @@ const ProviderServices = () => {
                 <button
                   onClick={() => deleteService(service.id)}
                   className="btn-danger"
+                  disabled={deletingId === service.id}
                   style={{ width: "100%", marginTop: "20px" }}
                 >
                   <Trash2 size={16} />
-                  Delete Service
+                  {deletingId === service.id ? "Deleting..." : "Delete Service"}
                 </button>
               </div>
             </article>
