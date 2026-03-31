@@ -18,13 +18,21 @@ public class CloudinaryImageService {
     }
 
     public String uploadProfileImage(MultipartFile file) throws IOException {
-        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+        Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
         Object secureUrl = uploadResult.get("secure_url");
 
         if (secureUrl == null) {
             throw new IOException("Cloudinary did not return a secure URL");
         }
 
-        return secureUrl.toString();
+        String imageUrl = secureUrl.toString();
+
+        if (!imageUrl.startsWith("https://")) {
+            throw new IOException("Cloudinary returned a non-secure image URL");
+        }
+
+        System.out.println("Profile Image URL: " + imageUrl);
+
+        return imageUrl;
     }
 }

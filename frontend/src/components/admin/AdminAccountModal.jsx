@@ -129,7 +129,7 @@ const AdminAccountModal = ({
                     type="text"
                     value={form.profileImage}
                     onChange={(event) => onChange("profileImage", event.target.value)}
-                    placeholder="Optional image URL"
+                    placeholder="Optional public HTTPS image URL"
                   />
                 </div>
               </div>

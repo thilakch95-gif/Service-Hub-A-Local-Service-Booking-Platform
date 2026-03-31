@@ -72,6 +72,10 @@ const Profile = () => {
     const file = e.target.files[0];
     if (!file) return;
 
+    if (profile.profileImage?.startsWith("blob:")) {
+      URL.revokeObjectURL(profile.profileImage);
+    }
+
     setImageFile(file);
     setProfile((prev) => ({
       ...prev,
@@ -103,14 +107,23 @@ const Profile = () => {
         },
       });
 
+      const nextProfile = {
+        fullName: res.data.fullName || "",
+        phone: res.data.phone || "",
+        bio: res.data.bio || "",
+        profileImage: res.data.profileImage || "",
+      };
+
       alert("Profile updated successfully");
+      setProfile(nextProfile);
+      setImageFile(null);
 
       updateUser({
-        fullName: res.data.fullName,
-        profileImage: res.data.profileImage,
+        fullName: nextProfile.fullName,
+        phone: nextProfile.phone,
+        bio: nextProfile.bio,
+        profileImage: nextProfile.profileImage,
       });
-
-      loadProfile();
     } catch (err) {
       console.log("Update error:", err.response?.data || err);
       alert(err.response?.data || "Profile update failed");

@@ -28,8 +28,6 @@ services:
         value: https://service-hub-frontned.onrender.com
       - key: BACKEND_URL
         value: https://service-hub-backend-57di.onrender.com
-      - key: UPLOAD_DIR
-        value: /var/data/uploads
       - key: APP_ADMIN_NAME
         value: System Admin
       - key: APP_ADMIN_EMAIL
@@ -48,11 +46,6 @@ services:
         value: admin@demo.com
       - key: DEMO_ADMIN_PASSWORD
         value: Admin@123
-    disk:
-      name: uploads
-      mountPath: /var/data
-      sizeGB: 1
-
   - type: web
     runtime: static
     name: service-hub-frontend

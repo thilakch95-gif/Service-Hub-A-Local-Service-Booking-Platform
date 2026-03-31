@@ -140,11 +140,24 @@ public class AdminController {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(role);
         user.setPhone(request.getPhone());
-        user.setProfileImage(request.getProfileImage());
+        user.setProfileImage(normalizeProfileImage(request.getProfileImage()));
         user.setBio(request.getBio());
         user.setActive(true);
 
         return userRepository.save(user);
+    }
+
+    private String normalizeProfileImage(String profileImage) {
+        if (profileImage == null || profileImage.isBlank()) {
+            return null;
+        }
+
+        String trimmed = profileImage.trim();
+        if (!trimmed.startsWith("https://") && !trimmed.startsWith("http://")) {
+            throw new BadRequestException("Profile image must be a public image URL");
+        }
+
+        return trimmed;
     }
 
     private void deleteAccount(Long id, Role expectedRole) {
