@@ -11,6 +11,7 @@ import com.localservicefinder.repository.UserRepository;
 import com.localservicefinder.service.ServiceManagementService;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ServiceManagementServiceImpl implements ServiceManagementService {
@@ -77,6 +78,7 @@ public class ServiceManagementServiceImpl implements ServiceManagementService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ServiceDtos.ServiceResponse getById(Long id) {
 
         ServiceEntity entity = serviceRepository.findById(id)
@@ -86,6 +88,7 @@ public class ServiceManagementServiceImpl implements ServiceManagementService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<ServiceDtos.ServiceResponse> list(String category, String location, int page, int size) {
 
         Page<ServiceEntity> result =
@@ -99,6 +102,7 @@ public class ServiceManagementServiceImpl implements ServiceManagementService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<ServiceDtos.ServiceResponse> providerServices(String providerEmail, int page, int size) {
 
         User provider = requireProvider(providerEmail);
@@ -124,6 +128,7 @@ public class ServiceManagementServiceImpl implements ServiceManagementService {
     public ServiceDtos.ServiceResponse map(ServiceEntity entity) {
 
         ServiceDtos.ServiceResponse response = new ServiceDtos.ServiceResponse();
+        User provider = entity.getProvider();
 
         response.setId(entity.getId());
         response.setTitle(entity.getTitle());
@@ -131,8 +136,8 @@ public class ServiceManagementServiceImpl implements ServiceManagementService {
         response.setCategory(entity.getCategory());
         response.setPrice(entity.getPrice());
         response.setLocation(entity.getLocation());
-        response.setProviderId(entity.getProvider().getId());
-        response.setProviderName(entity.getProvider().getFullName());
+        response.setProviderId(provider != null ? provider.getId() : null);
+        response.setProviderName(provider != null ? provider.getFullName() : "Unknown provider");
         response.setCreatedAt(entity.getCreatedAt());
 
         return response;

@@ -37,7 +37,7 @@ const App = () => {
       return;
     }
 
-    fetch(WS_BASE_URL, {
+    fetch(`${WS_BASE_URL}/api/auth/test`, {
       method: "GET",
       mode: "no-cors",
       cache: "no-store",
