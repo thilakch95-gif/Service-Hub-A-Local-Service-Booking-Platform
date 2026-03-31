@@ -25,7 +25,7 @@ services:
       - key: JWT_EXPIRATION_MS
         value: 86400000
       - key: FRONTEND_URL
-        value: https://service-hub-frontned.onrender.com
+        value: https://service-hub-frontend.onrender.com
       - key: BACKEND_URL
         value: https://service-hub-backend-57di.onrender.com
       - key: APP_ADMIN_NAME

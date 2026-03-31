@@ -1,6 +1,7 @@
 package com.localservicefinder.config;
 
 import com.localservicefinder.security.JwtAuthenticationFilter;
+import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,7 +39,9 @@ public class SecurityConfig {
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
             .authorizeHttpRequests(auth -> auth
-            	    .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/auth/test").permitAll()
+                .requestMatchers("/api/users/profile").authenticated()
                 .requestMatchers("/ws/**").permitAll()
 
                 /* QR PAYMENT ENDPOINTS */

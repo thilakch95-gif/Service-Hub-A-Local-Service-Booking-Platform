@@ -27,11 +27,11 @@ public class CloudinaryImageService {
 
         String imageUrl = secureUrl.toString();
 
-        if (!imageUrl.startsWith("https://")) {
-            throw new IOException("Cloudinary returned a non-secure image URL");
+        if (!imageUrl.startsWith("https://res.cloudinary.com/")) {
+            throw new IOException("Cloudinary returned an unexpected secure URL");
         }
 
-        System.out.println("Profile Image URL: " + imageUrl);
+        System.out.println("Cloudinary URL: " + imageUrl);
 
         return imageUrl;
     }

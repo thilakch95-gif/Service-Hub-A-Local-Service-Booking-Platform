@@ -52,6 +52,14 @@ export const AuthProvider = ({ children }) => {
       return persistUser(updatedUser);
     } catch (err) {
       console.log("Profile load error:", err);
+
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        setUser(null);
+        return null;
+      }
+
       return baseUser;
     } finally {
       setIsBootstrapping(false);

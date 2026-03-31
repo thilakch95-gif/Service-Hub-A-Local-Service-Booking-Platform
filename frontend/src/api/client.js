@@ -81,8 +81,12 @@ client.interceptors.request.use(
 client.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Handle unauthorized (token expired / deleted user)
-    if (error.response?.status === 401) {
+    const status = error.response?.status;
+    const requestUrl = error.config?.url || "";
+    const isProfileRequest = requestUrl.includes("/users/profile");
+
+    // Handle unauthorized or stale session during profile bootstrap
+    if (status === 401 || (status === 403 && isProfileRequest)) {
       console.warn("Unauthorized - redirecting to login");
 
       localStorage.removeItem("token");

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -30,17 +32,17 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public User getProfile(Authentication authentication) {
+    public Map<String, Object> getProfile(Authentication authentication) {
 
         User user = userRepository
                 .findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return user;
+        return buildProfileResponse(user);
     }
 
     @PutMapping(value = "/profile", consumes = "multipart/form-data")
-    public User updateProfile(
+    public Map<String, Object> updateProfile(
             Authentication authentication,
             @RequestParam String fullName,
             @RequestParam(required = false) String phone,
@@ -60,7 +62,8 @@ public class UserController {
             user.setProfileImage(cloudinaryImageService.uploadProfileImage(profileImage));
         }
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        return buildProfileResponse(savedUser);
     }
 
     @PostMapping("/change-password")
@@ -110,5 +113,37 @@ public class UserController {
         userRepository.delete(user);
 
         return "Account deleted successfully";
+    }
+
+    private Map<String, Object> buildProfileResponse(User user) {
+        Map<String, Object> response = new LinkedHashMap<>();
+
+        response.put("id", user.getId());
+        response.put("fullName", user.getFullName());
+        response.put("email", user.getEmail());
+        response.put("role", user.getRole());
+        response.put("phone", user.getPhone());
+        response.put("bio", user.getBio());
+        response.put("profileImage", sanitizeProfileImage(user.getProfileImage()));
+        response.put("active", user.isActive());
+
+        return response;
+    }
+
+    private String sanitizeProfileImage(String profileImage) {
+        if (profileImage == null || profileImage.isBlank()) {
+            return null;
+        }
+
+        String trimmed = profileImage.trim();
+        if (trimmed.startsWith("/uploads/")) {
+            return null;
+        }
+
+        if (trimmed.startsWith("https://") || trimmed.startsWith("http://")) {
+            return trimmed;
+        }
+
+        return null;
     }
 }
