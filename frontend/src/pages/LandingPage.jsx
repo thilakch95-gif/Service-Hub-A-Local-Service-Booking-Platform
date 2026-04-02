@@ -3,6 +3,7 @@ import {
   ArrowRight,
   Car,
   CalendarCheck,
+  CreditCard,
   Droplet,
   ShieldCheck,
   Sparkles,
@@ -83,6 +84,21 @@ const roles = [
     icon: ShieldCheck,
     accent: "rgba(248,113,113,0.18)",
     points: ["Monitor activity across all roles", "Keep services and reviews healthy"],
+  },
+];
+
+const paymentFlow = [
+  {
+    title: "Book first",
+    description: "Customers choose a service and send a booking request from the dashboard.",
+  },
+  {
+    title: "Pay after approval",
+    description: "Once a provider approves the request, the booking becomes payment-ready.",
+  },
+  {
+    title: "Use the method you prefer",
+    description: "The payment screen supports card, UPI ID, and UPI QR so checkout stays flexible.",
   },
 ];
 
@@ -329,6 +345,91 @@ const LandingPage = () => {
               The interface is designed to reduce friction for both customers and providers,
               with clearer status visibility, stronger visual hierarchy, and streamlined actions.
             </p>
+
+            <div
+              className="panel"
+              style={{
+                marginTop: "24px",
+                padding: "22px",
+                color: "#f8fbff",
+                background: "rgba(8, 14, 26, 0.72)",
+                borderColor: "rgba(255,255,255,0.08)",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+                <div
+                  style={{
+                    width: "46px",
+                    height: "46px",
+                    borderRadius: "16px",
+                    display: "grid",
+                    placeItems: "center",
+                    background:
+                      "linear-gradient(135deg, rgba(59,130,246,0.16), rgba(20,184,166,0.16))",
+                  }}
+                >
+                  <CreditCard size={20} />
+                </div>
+                <div>
+                  <p className="page-kicker" style={{ margin: 0, color: "rgba(255,255,255,0.54)" }}>
+                    Payment Flow
+                  </p>
+                  <h3
+                    style={{
+                      margin: "6px 0 0",
+                      fontSize: "20px",
+                      fontFamily: "var(--font-display)",
+                      color: "#f8fbff",
+                    }}
+                  >
+                    How payments work
+                  </h3>
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gap: "14px" }}>
+                {paymentFlow.map((item, index) => (
+                  <div
+                    key={item.title}
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "auto 1fr",
+                      gap: "12px",
+                      alignItems: "start",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "28px",
+                        height: "28px",
+                        borderRadius: "999px",
+                        display: "grid",
+                        placeItems: "center",
+                        background: "rgba(255,255,255,0.08)",
+                        color: "#f8fbff",
+                        fontSize: "12px",
+                        fontWeight: 800,
+                      }}
+                    >
+                      {index + 1}
+                    </div>
+                    <div>
+                      <p style={{ margin: 0, fontSize: "15px", fontWeight: 700 }}>{item.title}</p>
+                      <p
+                        style={{
+                          margin: "4px 0 0",
+                          color: "rgba(255,255,255,0.68)",
+                          lineHeight: 1.7,
+                          fontSize: "14px",
+                        }}
+                      >
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div style={{ display: "grid", gap: "16px" }}>
