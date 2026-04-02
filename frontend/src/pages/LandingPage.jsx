@@ -98,7 +98,8 @@ const paymentFlow = [
   },
   {
     title: "Use the method you prefer",
-    description: "The payment screen supports card, UPI ID, and UPI QR so checkout stays flexible.",
+    description:
+      "The payment screen supports card, UPI ID, and UPI QR so checkout stays flexible. Payment confirmation works when the website and the payment device are connected to the same Wi-Fi network.",
   },
 ];
 
