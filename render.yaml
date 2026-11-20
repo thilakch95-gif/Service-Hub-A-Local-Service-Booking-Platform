@@ -23,7 +23,7 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRATION_MS
-        value: 86400000
+        
       - key: FRONTEND_URL
         value: https://service-hub-frontend.onrender.com
       - key: BACKEND_URL
@@ -33,19 +33,19 @@ services:
       - key: APP_ADMIN_EMAIL
         value: admin@servicehub.com
       - key: APP_ADMIN_PASSWORD
-        value: admin123
+        
       - key: DEMO_USER_EMAIL
         value: user@demo.com
       - key: DEMO_USER_PASSWORD
-        value: User@123
+        
       - key: DEMO_PROVIDER_EMAIL
         value: provider@demo.com
       - key: DEMO_PROVIDER_PASSWORD
-        value: Provider@123
+        
       - key: DEMO_ADMIN_EMAIL
         value: admin@demo.com
       - key: DEMO_ADMIN_PASSWORD
-        value: Admin@123
+        
   - type: web
     runtime: static
     name: service-hub-frontend
