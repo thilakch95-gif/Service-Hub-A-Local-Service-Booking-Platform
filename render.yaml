@@ -1,3 +1,4 @@
+
 databases:
   - name: service-hub-db
     databaseName: service_hub
@@ -5,6 +6,7 @@ databases:
     region: oregon
 
 services:
+  # Backend - Spring Boot
   - type: web
     runtime: docker
     name: service-hub-backend
@@ -16,36 +18,52 @@ services:
     envVars:
       - key: PORT
         value: 10000
+
       - key: DATABASE_URL
         fromDatabase:
           name: service-hub-db
           property: connectionString
+
       - key: JWT_SECRET
         generateValue: true
+
       - key: JWT_EXPIRATION_MS
-        
+        value: "86400000"
+
       - key: FRONTEND_URL
         value: https://service-hub-frontend.onrender.com
+
       - key: BACKEND_URL
         value: https://service-hub-backend-57di.onrender.com
+
       - key: APP_ADMIN_NAME
         value: System Admin
+
       - key: APP_ADMIN_EMAIL
         value: admin@servicehub.com
+
       - key: APP_ADMIN_PASSWORD
-        
+        sync: false
+
       - key: DEMO_USER_EMAIL
         value: user@demo.com
+
       - key: DEMO_USER_PASSWORD
-        
+        sync: false
+
       - key: DEMO_PROVIDER_EMAIL
         value: provider@demo.com
+
       - key: DEMO_PROVIDER_PASSWORD
-        
+        sync: false
+
       - key: DEMO_ADMIN_EMAIL
         value: admin@demo.com
+
       - key: DEMO_ADMIN_PASSWORD
-        
+        sync: false
+
+  # Frontend - React/Vite
   - type: web
     runtime: static
     name: service-hub-frontend
@@ -53,11 +71,14 @@ services:
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
+
     envVars:
       - key: VITE_API_BASE_URL
         value: https://service-hub-backend-57di.onrender.com/api
+
       - key: VITE_WS_BASE_URL
         value: https://service-hub-backend-57di.onrender.com
+
     routes:
       - type: rewrite
         source: /*
